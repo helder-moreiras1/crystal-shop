@@ -1,0 +1,32 @@
+
+Frontend — 10+ pages including shop, product detail, collections, blog, cart, checkout & account. Mobile-first, SEO-optimised with structured data.
+
+Backend — tRPC routers for products, cart, orders, users, and admin. Includes inventory management, coupon engine, and tax calculation.
+
+Database — 12 Prisma models: User, Product, Order, Cart, Review, Coupon, Wishlist, etc.
+
+Integrations:
+
+┌──────────────────┬──────────────────────────┐
+│ Integration      │ Purpose                  │
+├──────────────────┼──────────────────────────┤
+│ Stripe           │ Payments, tax, refunds   │
+├──────────────────┼──────────────────────────┤
+│ Supabase         │ DB + Auth + Storage      │
+├──────────────────┼──────────────────────────┤
+│ Cloudinary       │ Image optimization       │
+├──────────────────┼──────────────────────────┤
+│ Resend           │ Transactional emails     │
+├──────────────────┼──────────────────────────┤
+│ Algolia          │ Product search & filters │
+├──────────────────┼──────────────────────────┤
+│ GA4 + Meta Pixel │ Analytics & ads          │
+├──────────────────┼──────────────────────────┤
+│ EasyPost/Shippo  │ Shipping rates & labels  │
+└──────────────────┴──────────────────────────┘
+
+3 Delivery Phases:
+
+ - Phase 1 (Wks 1–6): MVP — catalog, cart, checkout, auth, admin
+ - Phase 2 (Wks 7–10): Accounts, reviews, search, coupons, blog
+ - Phase 3 (Wks 11–14): Abandoned cart, analytics, tracking, SEO audit
