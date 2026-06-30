@@ -5,6 +5,7 @@ import { cartRouter } from "@/server/routers/cart";
 import { orderRouter } from "@/server/routers/order";
 import { userRouter } from "@/server/routers/user";
 import { collectionRouter } from "@/server/routers/collection";
+import { adminRouter } from "@/server/routers/admin";
 
 export const appRouter = createTRPCRouter({
   product: productRouter,
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   order: orderRouter,
   user: userRouter,
   collection: collectionRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;
