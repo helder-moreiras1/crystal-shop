@@ -28,28 +28,28 @@ export default async function HomePage() {
         <section className="relative overflow-hidden bg-gradient-to-br from-accent via-background to-primary/10 py-20 md:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-sm font-medium text-primary uppercase tracking-widest mb-4">
-              Cristais Selecionados à Mão
+              Selecionados com Amor e Intenção
             </p>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
-              Descobre o Poder dos{" "}
+              Sente a Energia dos{" "}
               <span className="text-primary">Cristais</span>
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-10 leading-relaxed">
-              Explora a nossa coleção cuidadosamente selecionada de cristais, pedras preciosas e
-              pedras de cura de origem ética. Cada peça é escolhida à mão com intenção e cuidado.
+              Cristais, pedras preciosas e minerais de origem responsável, escolhidos a pensar em
+              ti. Cada peça carrega a sua própria energia — encontra a tua.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/shop"
                 className="inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                Ver Todos os Cristais
+                Explorar a Loja
               </Link>
               <Link
                 href="/collections"
                 className="inline-flex items-center justify-center rounded-xl border border-border bg-background px-8 py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
               >
-                Ver Coleções
+                Descobrir Coleções
               </Link>
             </div>
           </div>
@@ -66,13 +66,13 @@ export default async function HomePage() {
                   <h2 className="text-2xl md:text-3xl font-bold text-foreground">
                     Cristais em Destaque
                   </h2>
-                  <p className="text-muted-foreground mt-1">Os nossos favoritos</p>
+                  <p className="text-muted-foreground mt-1">Escolhas especiais para ti</p>
                 </div>
                 <Link
                   href="/shop"
                   className="text-sm font-medium text-primary hover:underline"
                 >
-                  Ver tudo →
+                  Ver todos →
                 </Link>
               </div>
               <ProductGrid products={featured} />
@@ -85,9 +85,9 @@ export default async function HomePage() {
           <section className="py-16 md:py-20 bg-muted/30">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Comprar por Categoria
+                Explorar por Categoria
               </h2>
-              <p className="text-muted-foreground mb-8">Encontra o teu cristal perfeito</p>
+              <p className="text-muted-foreground mb-8">Cada cristal tem o seu dono — descobre o teu</p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                 {categories.map((cat) => (
                   <Link
@@ -113,18 +113,18 @@ export default async function HomePage() {
               {[
                 {
                   icon: "🌍",
-                  title: "Origem Responsável",
-                  desc: "Cada cristal é adquirido de forma responsável junto de fornecedores de confiança em todo o mundo.",
+                  title: "Origem Consciente",
+                  desc: "Todos os nossos cristais provêm de fornecedores responsáveis e de confiança, de todo o mundo.",
                 },
                 {
                   icon: "✋",
                   title: "Selecionado à Mão",
-                  desc: "Selecionamos cada peça pessoalmente pela sua qualidade, energia e beleza natural.",
+                  desc: "Cada peça é escolhida pessoalmente pela sua beleza, energia e qualidade únicas.",
                 },
                 {
                   icon: "📦",
                   title: "Embalado com Cuidado",
-                  desc: "Embalado com carinho e enviado para que o teu cristal chegue em perfeitas condições.",
+                  desc: "Embalamos cada encomenda com carinho para que o teu cristal chegue perfeito, pronto a ser teu.",
                 },
               ].map(({ icon, title, desc }) => (
                 <div key={title} className="flex flex-col items-center text-center gap-3">

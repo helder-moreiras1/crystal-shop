@@ -45,7 +45,7 @@ export default function RegisterPage() {
         <span className="text-5xl mb-4 block">📧</span>
         <h1 className="text-xl font-semibold text-foreground mb-2">Verifica o teu email</h1>
         <p className="text-sm text-muted-foreground">
-          Enviámos um link de confirmação para <strong>{email}</strong>. Clica nele para ativar a tua conta.
+          Enviámos um link de confirmação para <strong>{email}</strong>. Clica nele para ativares a tua conta e começares a explorar.
         </p>
         <Link href="/login" className="mt-6 inline-block text-sm text-primary hover:underline">
           Voltar ao início de sessão
@@ -57,7 +57,7 @@ export default function RegisterPage() {
   return (
     <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
       <h1 className="text-2xl font-semibold text-foreground mb-1">Criar conta</h1>
-      <p className="text-sm text-muted-foreground mb-6">Junta-te à comunidade Crystal Shop</p>
+      <p className="text-sm text-muted-foreground mb-6">A tua jornada começa aqui</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

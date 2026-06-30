@@ -76,7 +76,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product.isFeatured && (
             <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground shadow-sm">
-              Featured
+              Destaque
             </span>
           )}
           {isOnSale && discountPct > 0 && (
@@ -86,7 +86,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
           )}
           {isOutOfStock && (
             <span className="rounded-full bg-muted/90 backdrop-blur-sm px-2 py-0.5 text-xs font-medium text-muted-foreground border border-border">
-              Sold Out
+              Esgotado
             </span>
           )}
         </div>

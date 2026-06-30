@@ -32,8 +32,8 @@ export default function LoginPage() {
 
   return (
     <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
-      <h1 className="text-2xl font-semibold text-foreground mb-1">Bem-vindo/a de volta</h1>
-      <p className="text-sm text-muted-foreground mb-6">Inicia sessão na tua conta</p>
+      <h1 className="text-2xl font-semibold text-foreground mb-1">Bem-vindo de volta!</h1>
+      <p className="text-sm text-muted-foreground mb-6">Entra na tua conta</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

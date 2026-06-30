@@ -15,7 +15,7 @@ export default function CartPage() {
         <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
         <h1 className="text-2xl font-semibold text-foreground mb-2">O teu carrinho está vazio</h1>
         <p className="text-muted-foreground mb-8">
-          Parece que ainda não adicionaste nenhum cristal.
+          Ainda não adicionaste nenhum cristal. Que tal explorar a nossa loja?
         </p>
         <Link
           href="/shop"
@@ -128,7 +128,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>Envio</span>
-                <span>Calculado no pagamento</span>
+                <span className="text-xs">Calculado no checkout</span>
               </div>
             </div>
 

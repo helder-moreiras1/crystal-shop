@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="text-5xl font-bold text-foreground mb-4">404</h1>
         <h2 className="text-xl font-semibold text-foreground mb-2">Página não encontrada</h2>
         <p className="text-muted-foreground mb-8">
-          O cristal que procuras parece ter desaparecido noutras dimensões.
+          O cristal que procuras parece ter desaparecido noutras dimensões. Não te preocupes — temos muito mais para descobrir!
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link

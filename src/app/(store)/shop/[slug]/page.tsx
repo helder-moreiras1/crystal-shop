@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
 
           <p className={`text-sm font-medium ${product.stock === 0 ? "text-destructive" : product.stock <= 5 ? "text-yellow-600" : "text-green-600"}`}>
-            {product.stock === 0 ? "Esgotado" : product.stock <= 5 ? `Apenas ${product.stock} em stock` : "Em stock"}
+            {product.stock === 0 ? "Esgotado" : product.stock <= 5 ? `Apenas ${product.stock} unidades disponíveis` : "Em stock"}
           </p>
 
           <AddToCartButton productId={product.id} stock={product.stock} />
