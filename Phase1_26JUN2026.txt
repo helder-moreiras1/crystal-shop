@@ -1,0 +1,84 @@
+Everything is in place. Here's the full summary:
+
+-------------------------------------------------------------------------------------------------
+
+Status Report
+
+Prerequisites (must be done manually)
+
+ # 1. Create .env.local with your Supabase credentials
+ cp .env.example .env.local
+ # Fill in: DATABASE_URL, DIRECT_URL, SUPABASE_URL, SUPABASE_ANON_KEY
+ 
+ # 2. Install dependencies
+ npm install
+ 
+ # 3. Generate Prisma client
+ npx prisma generate
+ 
+ # 4. Apply migrations
+ npx prisma migrate dev --name init
+ 
+ # 5. Seed the database
+ npx prisma db seed
+ 
+ # 6. Start dev server
+ npm run dev
+
+-------------------------------------------------------------------------------------------------
+
+Phase 1C — Built ✅
+
+┌──────────────────────────────────────────────┬─────────────────────────────────────────────────┐
+│ File                                         │ Description                                     │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/utils/cn.ts                              │ Tailwind class merge helper                     │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/utils/formatCurrency.ts                  │ GBP currency formatter (handles Prisma Decimal) │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/utils/formatDate.ts                      │ Date formatter                                  │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/lib/trpc/server.ts                       │ Server-side tRPC caller (React cache memoised)  │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/lib/trpc/client.tsx                      │ TRPCReactProvider + trpc hook instance          │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/globals.css                          │ Added @theme inline for Tailwind v4 design      │
+│                                              │ tokens                                          │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/layout.tsx                           │ Wrapped app in TRPCReactProvider                │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/layout/Header.tsx             │ Sticky header with logo, nav, cart icon, mobile │
+│                                              │ menu                                            │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/layout/Footer.tsx             │ Footer with link columns                        │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/layout/Navigation.tsx         │ Active-state nav links                          │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/ProductCard.tsx       │ Product grid card with image, price, badges     │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/ProductGrid.tsx       │ Responsive product grid                         │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/ProductFilters.tsx    │ Sidebar filters (category, price, chakras,      │
+│                                              │ stock) — updates URL params                     │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/ProductSort.tsx       │ Sort dropdown — updates URL params              │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/ProductGallery.tsx    │ Image gallery with thumbnails + prev/next       │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/components/product/AddToCartButton.tsx   │ Add to cart with qty selector + tRPC mutation   │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/(store)/layout.tsx                   │ Store shell (Header + Footer for /shop, /cart,  │
+│                                              │ etc.)                                           │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/page.tsx                             │ Homepage: hero, featured products, category     │
+│                                              │ grid, value props                               │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/(store)/shop/page.tsx                │ Product listing: filters, sort, grid,           │
+│                                              │ pagination (all via URL params)                 │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/app/(store)/shop/[slug]/page.tsx         │ Product detail: gallery, info, add-to-cart,     │
+│                                              │ reviews                                         │
+├──────────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ src/server/routers/product.ts                │ Fixed: chakras + search filters now applied in  │
+│                                              │ query                                           │
+└──────────────────────────────────────────────┴─────────────────────────────────────────────────┘
