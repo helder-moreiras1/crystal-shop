@@ -52,9 +52,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <nav className="mb-6 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-primary">Home</Link>
+        <Link href="/" className="hover:text-primary">Início</Link>
         <span className="mx-2">/</span>
-        <Link href="/shop" className="hover:text-primary">Shop</Link>
+        <Link href="/shop" className="hover:text-primary">Loja</Link>
         <span className="mx-2">/</span>
         <Link href={`/shop?category=${product.categoryId}`} className="hover:text-primary">
           {product.category.name}
@@ -82,7 +82,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">
-                {avgRating.toFixed(1)} ({product.reviews.length} review{product.reviews.length !== 1 ? "s" : ""})
+                {avgRating.toFixed(1)} ({product.reviews.length} {product.reviews.length !== 1 ? "avaliações" : "avaliação"})
               </span>
             </div>
           )}
@@ -93,26 +93,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <>
                 <span className="text-base text-muted-foreground line-through">{formatCurrency(product.compareAtPrice)}</span>
                 <span className="rounded-full bg-destructive/10 text-destructive px-2 py-0.5 text-xs font-medium">
-                  Save {formatCurrency(savingAmount)}
+                  Poupas {formatCurrency(savingAmount)}
                 </span>
               </>
             )}
           </div>
 
           <p className={`text-sm font-medium ${product.stock === 0 ? "text-destructive" : product.stock <= 5 ? "text-yellow-600" : "text-green-600"}`}>
-            {product.stock === 0 ? "Out of stock" : product.stock <= 5 ? `Only ${product.stock} left in stock` : "In stock"}
+            {product.stock === 0 ? "Esgotado" : product.stock <= 5 ? `Apenas ${product.stock} em stock` : "Em stock"}
           </p>
 
           <AddToCartButton productId={product.id} stock={product.stock} />
 
           <div className="border-t border-border pt-5">
-            <h2 className="text-sm font-semibold text-foreground mb-2">Description</h2>
+            <h2 className="text-sm font-semibold text-foreground mb-2">Descrição</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
           </div>
 
           {product.properties.length > 0 && (
             <div>
-              <h2 className="text-sm font-semibold text-foreground mb-2">Properties</h2>
+              <h2 className="text-sm font-semibold text-foreground mb-2">Propriedades</h2>
               <div className="flex flex-wrap gap-1.5">
                 {product.properties.map((prop) => (
                   <span key={prop} className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-foreground">{prop}</span>
@@ -135,7 +135,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="border-t border-border pt-4 grid grid-cols-2 gap-3 text-sm">
             {product.origin && (
               <div>
-                <span className="text-muted-foreground">Origin</span>
+                <span className="text-muted-foreground">Origem</span>
                 <p className="font-medium text-foreground">{product.origin}</p>
               </div>
             )}
@@ -152,14 +152,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {product.reviews.length > 0 && (
         <section className="mt-16 border-t border-border pt-10">
           <h2 className="text-xl font-bold text-foreground mb-6">
-            Customer Reviews ({product.reviews.length})
+            Avaliações dos Clientes ({product.reviews.length})
           </h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {product.reviews.map((review) => (
               <div key={review.id} className="rounded-xl border border-border bg-card p-5">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{review.user.name ?? "Anonymous"}</p>
+                    <p className="text-sm font-semibold text-foreground">{review.user.name ?? "Anónimo"}</p>
                     <p className="text-xs text-muted-foreground">{formatDate(review.createdAt)}</p>
                   </div>
                   <div className="flex shrink-0">
@@ -170,7 +170,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </div>
                 {review.title && <p className="text-sm font-medium text-foreground mb-1">{review.title}</p>}
                 {review.body && <p className="text-sm text-muted-foreground leading-relaxed">{review.body}</p>}
-                {review.isVerified && <p className="mt-2 text-xs text-green-600 font-medium">Verified purchase</p>}
+                {review.isVerified && <p className="mt-2 text-xs text-green-600 font-medium">Compra verificada</p>}
               </div>
             ))}
           </div>

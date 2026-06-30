@@ -8,10 +8,10 @@ import { CartBadge } from "@/components/cart/CartBadge";
 import { cn } from "@/utils/cn";
 
 const mobileLinks = [
-  { href: "/shop", label: "Shop All" },
-  { href: "/collections", label: "Collections" },
+  { href: "/shop", label: "Ver Tudo" },
+  { href: "/collections", label: "Coleções" },
   { href: "/blog", label: "Blog" },
-  { href: "/account", label: "My Account" },
+  { href: "/account", label: "A Minha Conta" },
 ];
 
 export function Header() {
@@ -36,14 +36,14 @@ export function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/shop?search=1"
-              aria-label="Search"
+              aria-label="Pesquisar"
               className="p-2 rounded-md text-foreground/70 hover:text-primary hover:bg-accent transition-colors"
             >
               <Search className="h-5 w-5" />
             </Link>
             <Link
               href="/account"
-              aria-label="Account"
+              aria-label="Conta"
               className="p-2 rounded-md text-foreground/70 hover:text-primary hover:bg-accent transition-colors hidden sm:flex"
             >
               <User className="h-5 w-5" />
@@ -53,7 +53,7 @@ export function Header() {
             <button
               onClick={() => setMobileOpen((o) => !o)}
               className="md:hidden p-2 rounded-md text-foreground/70 hover:text-primary hover:bg-accent transition-colors"
-              aria-label="Toggle menu"
+              aria-label="Abrir menu"
             >
               {mobileOpen ? (
                 <X className="h-5 w-5" />

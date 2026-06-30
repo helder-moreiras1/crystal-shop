@@ -63,7 +63,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
           </>
         )}
         <p className="mt-4 text-sm text-muted-foreground">
-          {products.length} {products.length === 1 ? "product" : "products"}
+          {products.length} {products.length === 1 ? "produto" : "produtos"}
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         <ProductGrid products={products} />
       ) : (
         <p className="text-center text-muted-foreground py-16">
-          No products in this collection yet.
+          Ainda não há produtos nesta coleção.
         </p>
       )}
     </div>

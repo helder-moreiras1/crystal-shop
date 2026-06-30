@@ -44,7 +44,7 @@ export function QuickAddButton({ productId, stock }: QuickAddButtonProps) {
     <button
       onClick={handleAdd}
       disabled={addItem.isPending || added}
-      aria-label="Quick add to cart"
+      aria-label="Adicionar ao carrinho rapidamente"
       className={cn(
         "absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5",
         "rounded-full px-4 py-2 text-xs font-semibold shadow-lg",
@@ -63,7 +63,7 @@ export function QuickAddButton({ productId, stock }: QuickAddButtonProps) {
       ) : (
         <ShoppingBag className="h-3.5 w-3.5" />
       )}
-      {added ? "Added!" : "Quick Add"}
+      {added ? "Adicionado!" : "Adicionar"}
     </button>
   );
 }

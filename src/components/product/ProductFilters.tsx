@@ -5,13 +5,13 @@ import { useCallback } from "react";
 import { cn } from "@/utils/cn";
 
 const CHAKRAS = [
-  "Root",
+  "Raiz",
   "Sacral",
-  "Solar Plexus",
-  "Heart",
-  "Throat",
-  "Third Eye",
-  "Crown",
+  "Plexo Solar",
+  "Coração",
+  "Garganta",
+  "Terceiro Olho",
+  "Coroa",
 ];
 
 interface Category {
@@ -80,14 +80,14 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-          Filters
+          Filtros
         </h2>
         {hasFilters && (
           <button
             onClick={clearAll}
             className="text-xs text-primary hover:underline"
           >
-            Clear all
+            Limpar tudo
           </button>
         )}
       </div>
@@ -95,7 +95,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Category */}
       <div>
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-          Category
+          Categoria
         </h3>
         <ul className="space-y-1">
           <li>
@@ -106,7 +106,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
                 !selectedCategory ? "text-primary font-medium" : "text-foreground/70"
               )}
             >
-              All Products
+              Todos os Produtos
             </button>
           </li>
           {categories.map((cat) => (
@@ -149,12 +149,12 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
       {/* Price */}
       <div>
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-          Price (£)
+          Preço (€)
         </h3>
         <div className="flex items-center gap-2">
           <input
             type="number"
-            placeholder="Min"
+            placeholder="Mín"
             min={0}
             value={minPrice}
             onChange={(e) => navigate({ minPrice: e.target.value || null })}
@@ -163,7 +163,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
           <span className="text-muted-foreground text-sm">–</span>
           <input
             type="number"
-            placeholder="Max"
+            placeholder="Máx"
             min={0}
             value={maxPrice}
             onChange={(e) => navigate({ maxPrice: e.target.value || null })}
@@ -181,7 +181,7 @@ export function ProductFilters({ categories }: ProductFiltersProps) {
             onChange={(e) => navigate({ inStock: e.target.checked ? "true" : null })}
             className="h-4 w-4 rounded border-border accent-primary"
           />
-          <span className="text-sm text-foreground">In stock only</span>
+          <span className="text-sm text-foreground">Apenas em stock</span>
         </label>
       </div>
 

@@ -13,15 +13,15 @@ export default function CartPage() {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 text-center">
         <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
-        <h1 className="text-2xl font-semibold text-foreground mb-2">Your cart is empty</h1>
+        <h1 className="text-2xl font-semibold text-foreground mb-2">O teu carrinho está vazio</h1>
         <p className="text-muted-foreground mb-8">
-          Looks like you haven&apos;t added any crystals yet.
+          Parece que ainda não adicionaste nenhum cristal.
         </p>
         <Link
           href="/shop"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         >
-          Browse the shop
+          Explorar a loja
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -31,7 +31,7 @@ export default function CartPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-2xl font-semibold text-foreground mb-8">
-        Shopping Cart ({itemCount} {itemCount === 1 ? "item" : "items"})
+        Carrinho ({itemCount} {itemCount === 1 ? "artigo" : "artigos"})
       </h1>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
@@ -70,13 +70,13 @@ export default function CartPage() {
                         {item.product.name}
                       </Link>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        {formatCurrency(item.product.price)} each
+                      {formatCurrency(item.product.price)} cada
                       </p>
                     </div>
                     <button
                       onClick={() => removeItem(item.id)}
                       disabled={isLoading}
-                      aria-label="Remove item"
+                      aria-label="Remover artigo"
                       className="p-1 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -89,7 +89,7 @@ export default function CartPage() {
                       <button
                         onClick={() => updateItem(item.id, item.quantity - 1)}
                         disabled={isLoading || item.quantity <= 1}
-                        aria-label="Decrease quantity"
+                        aria-label="Diminuir quantidade"
                         className="p-1.5 text-foreground/70 hover:text-foreground disabled:opacity-30 transition-colors"
                       >
                         <Minus className="h-3.5 w-3.5" />
@@ -100,7 +100,7 @@ export default function CartPage() {
                       <button
                         onClick={() => updateItem(item.id, item.quantity + 1)}
                         disabled={isLoading || item.quantity >= item.product.stock}
-                        aria-label="Increase quantity"
+                        aria-label="Aumentar quantidade"
                         className="p-1.5 text-foreground/70 hover:text-foreground disabled:opacity-30 transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
@@ -119,7 +119,7 @@ export default function CartPage() {
         {/* Order summary */}
         <div className="lg:col-span-1">
           <div className="rounded-lg border border-border bg-card p-6 space-y-4 sticky top-24">
-            <h2 className="text-lg font-semibold text-foreground">Order Summary</h2>
+            <h2 className="text-lg font-semibold text-foreground">Resumo da Encomenda</h2>
 
             <div className="space-y-2 text-sm">
               <div className="flex justify-between text-muted-foreground">
@@ -127,8 +127,8 @@ export default function CartPage() {
                 <span>{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
-                <span>Shipping</span>
-                <span>Calculated at checkout</span>
+                <span>Envio</span>
+                <span>Calculado no pagamento</span>
               </div>
             </div>
 
@@ -141,7 +141,7 @@ export default function CartPage() {
               href="/checkout"
               className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              Proceed to Checkout
+              Finalizar Compra
               <ArrowRight className="h-4 w-4" />
             </Link>
 
@@ -149,7 +149,7 @@ export default function CartPage() {
               href="/shop"
               className="flex w-full items-center justify-center text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Continue Shopping
+              Continuar a Comprar
             </Link>
           </div>
         </div>

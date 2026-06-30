@@ -7,8 +7,8 @@ import { ProductSort } from "@/components/product/ProductSort";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const metadata = {
-  title: "Shop All Crystals",
-  description: "Browse our full collection of crystals, gemstones, and healing stones.",
+  title: "Loja de Cristais",
+  description: "Explora a nossa coleção completa de cristais, pedras preciosas e pedras de cura.",
 };
 
 interface ShopPageProps {
@@ -58,15 +58,15 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-primary">Home</Link>
+        <Link href="/" className="hover:text-primary">Início</Link>
         <span className="mx-2">/</span>
-        <span className="text-foreground font-medium">Shop</span>
+        <span className="text-foreground font-medium">Loja</span>
       </nav>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Filters sidebar */}
         <aside className="w-full md:w-60 shrink-0">
-          <Suspense fallback={<div className="text-sm text-muted-foreground">Loading filters…</div>}>
+          <Suspense fallback={<div className="text-sm text-muted-foreground">A carregar filtros…</div>}>
             <ProductFilters categories={categories} />
           </Suspense>
         </aside>
@@ -77,8 +77,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <p className="text-sm text-muted-foreground">
               {total === 0
-                ? "No products found"
-                : `Showing ${(page - 1) * 24 + 1}–${Math.min(page * 24, total)} of ${total} products`}
+                ? "Nenhum produto encontrado"
+                : `A mostrar ${(page - 1) * 24 + 1}–${Math.min(page * 24, total)} de ${total} produtos`}
             </p>
             <Suspense fallback={null}>
               <ProductSort />
@@ -95,7 +95,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 <PaginationLink
                   params={params}
                   page={page - 1}
-                  aria-label="Previous page"
+                aria-label="Página anterior"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </PaginationLink>
@@ -129,7 +129,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                 <PaginationLink
                   params={params}
                   page={page + 1}
-                  aria-label="Next page"
+                aria-label="Página seguinte"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </PaginationLink>

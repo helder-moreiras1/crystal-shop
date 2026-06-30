@@ -3,10 +3,10 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 const SORT_OPTIONS = [
-  { value: "newest", label: "Newest" },
-  { value: "price_asc", label: "Price: Low to High" },
-  { value: "price_desc", label: "Price: High to Low" },
-  { value: "popular", label: "Most Popular" },
+  { value: "newest", label: "Mais recentes" },
+  { value: "price_asc", label: "Preço: crescente" },
+  { value: "price_desc", label: "Preço: decrescente" },
+  { value: "popular", label: "Mais populares" },
 ] as const;
 
 export function ProductSort() {
@@ -25,7 +25,7 @@ export function ProductSort() {
   return (
     <div className="flex items-center gap-2">
       <label htmlFor="sort" className="text-sm text-muted-foreground whitespace-nowrap">
-        Sort by:
+        Ordenar por:
       </label>
       <select
         id="sort"

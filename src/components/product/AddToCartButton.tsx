@@ -49,12 +49,12 @@ export function AddToCartButton({ productId, stock, className }: AddToCartButton
       {/* Quantity selector */}
       {!isOutOfStock && (
         <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">Qty:</span>
+          <span className="text-sm text-muted-foreground">Qtd:</span>
           <div className="flex items-center border border-input rounded-md overflow-hidden">
             <button
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               className="px-3 py-1.5 text-sm hover:bg-muted transition-colors"
-              aria-label="Decrease quantity"
+              aria-label="Diminuir quantidade"
             >
               −
             </button>
@@ -64,7 +64,7 @@ export function AddToCartButton({ productId, stock, className }: AddToCartButton
             <button
               onClick={() => setQty((q) => Math.min(stock, q + 1))}
               className="px-3 py-1.5 text-sm hover:bg-muted transition-colors"
-              aria-label="Increase quantity"
+              aria-label="Aumentar quantidade"
             >
               +
             </button>
@@ -91,10 +91,10 @@ export function AddToCartButton({ productId, stock, className }: AddToCartButton
           <ShoppingBag className="h-4 w-4" />
         )}
         {isOutOfStock
-          ? "Out of Stock"
+          ? "Esgotado"
           : added
-          ? "Added to Cart ✓"
-          : "Add to Cart"}
+          ? "Adicionado ✓"
+          : "Adicionar ao Carrinho"}
       </button>
     </div>
   );

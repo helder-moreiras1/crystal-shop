@@ -15,14 +15,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Crystal Shop — Crystals & Gemstones",
+    default: "Crystal Shop — Cristais e Pedras Preciosas",
     template: "%s | Crystal Shop",
   },
   description:
-    "Discover beautiful crystals, gemstones, and healing stones. Hand-selected raw crystals, tumbled stones, towers, and jewellery.",
+    "Descobre cristais, pedras preciosas e pedras de cura únicas. Cristais em bruto, pedras roladas, torres e joias, selecionados à mão.",
   openGraph: {
     type: "website",
-    locale: "en_GB",
+    locale: "pt_PT",
     siteName: "Crystal Shop",
   },
 };
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

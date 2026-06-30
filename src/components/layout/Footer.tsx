@@ -1,23 +1,23 @@
 import Link from "next/link";
 
 const footerLinks = {
-  Shop: [
-    { href: "/shop", label: "All Products" },
-    { href: "/collections", label: "Collections" },
-    { href: "/shop?sort=newest", label: "New Arrivals" },
-    { href: "/shop?inStock=true", label: "In Stock" },
+  Loja: [
+    { href: "/shop", label: "Todos os Produtos" },
+    { href: "/collections", label: "Coleções" },
+    { href: "/shop?sort=newest", label: "Novidades" },
+    { href: "/shop?inStock=true", label: "Em Stock" },
   ],
-  Help: [
-    { href: "/blog", label: "Crystal Guide" },
+  Ajuda: [
+    { href: "/blog", label: "Guia de Cristais" },
     { href: "/faq", label: "FAQ" },
-    { href: "/shipping", label: "Shipping Info" },
-    { href: "/returns", label: "Returns" },
+    { href: "/shipping", label: "Envios" },
+    { href: "/returns", label: "Devoluções" },
   ],
-  Company: [
-    { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact" },
-    { href: "/privacy", label: "Privacy Policy" },
-    { href: "/terms", label: "Terms of Service" },
+  Empresa: [
+    { href: "/about", label: "Sobre Nós" },
+    { href: "/contact", label: "Contacto" },
+    { href: "/privacy", label: "Política de Privacidade" },
+    { href: "/terms", label: "Termos de Serviço" },
   ],
 };
 
@@ -33,7 +33,7 @@ export function Footer() {
               <span className="text-base font-semibold text-foreground">Crystal Shop</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Hand-selected crystals, gemstones and healing stones, sourced with love and intention.
+              Cristais, pedras preciosas e pedras de cura selecionados à mão, com amor e intenção.
             </p>
           </div>
 
@@ -59,10 +59,10 @@ export function Footer() {
 
         <div className="mt-10 border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Crystal Shop. All rights reserved.
+            © {new Date().getFullYear()} Crystal Shop. Todos os direitos reservados.
           </p>
           <p className="text-xs text-muted-foreground">
-            Made with 💜 for crystal lovers
+            Feito com 💜 para amantes de cristais
           </p>
         </div>
       </div>

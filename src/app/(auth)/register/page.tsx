@@ -43,13 +43,12 @@ export default function RegisterPage() {
     return (
       <div className="rounded-xl border border-border bg-card p-8 shadow-sm text-center">
         <span className="text-5xl mb-4 block">📧</span>
-        <h1 className="text-xl font-semibold text-foreground mb-2">Check your email</h1>
+        <h1 className="text-xl font-semibold text-foreground mb-2">Verifica o teu email</h1>
         <p className="text-sm text-muted-foreground">
-          We sent a confirmation link to <strong>{email}</strong>. Click it to activate your
-          account.
+          Enviámos um link de confirmação para <strong>{email}</strong>. Clica nele para ativar a tua conta.
         </p>
         <Link href="/login" className="mt-6 inline-block text-sm text-primary hover:underline">
-          Back to sign in
+          Voltar ao início de sessão
         </Link>
       </div>
     );
@@ -57,13 +56,13 @@ export default function RegisterPage() {
 
   return (
     <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
-      <h1 className="text-2xl font-semibold text-foreground mb-1">Create account</h1>
-      <p className="text-sm text-muted-foreground mb-6">Join the Crystal Shop community</p>
+      <h1 className="text-2xl font-semibold text-foreground mb-1">Criar conta</h1>
+      <p className="text-sm text-muted-foreground mb-6">Junta-te à comunidade Crystal Shop</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1">
-            Full name
+            Nome completo
           </label>
           <input
             id="name"
@@ -73,7 +72,7 @@ export default function RegisterPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            placeholder="Your name"
+            placeholder="O teu nome"
           />
         </div>
 
@@ -95,7 +94,7 @@ export default function RegisterPage() {
 
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-            Password
+            Palavra-passe
           </label>
           <input
             id="password"
@@ -106,7 +105,7 @@ export default function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            placeholder="Min. 8 characters"
+            placeholder="Mín. 8 caracteres"
           />
         </div>
 
@@ -119,14 +118,14 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
-          {loading ? "Creating account…" : "Create account"}
+          {loading ? "A criar conta…" : "Criar conta"}
         </button>
       </form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        Já tens conta?{" "}
         <Link href="/login" className="text-primary font-medium hover:underline">
-          Sign in
+          Iniciar sessão
         </Link>
       </p>
     </div>

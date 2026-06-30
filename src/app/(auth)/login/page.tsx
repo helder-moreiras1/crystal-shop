@@ -32,8 +32,8 @@ export default function LoginPage() {
 
   return (
     <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
-      <h1 className="text-2xl font-semibold text-foreground mb-1">Welcome back</h1>
-      <p className="text-sm text-muted-foreground mb-6">Sign in to your account</p>
+      <h1 className="text-2xl font-semibold text-foreground mb-1">Bem-vindo/a de volta</h1>
+      <p className="text-sm text-muted-foreground mb-6">Inicia sessão na tua conta</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -55,10 +55,10 @@ export default function LoginPage() {
         <div>
           <div className="flex items-center justify-between mb-1">
             <label htmlFor="password" className="block text-sm font-medium text-foreground">
-              Password
+              Palavra-passe
             </label>
             <a href="/forgot-password" className="text-xs text-primary hover:underline">
-              Forgot password?
+            Esqueceste a palavra-passe?
             </a>
           </div>
           <input
@@ -82,14 +82,14 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? "A iniciar sessão…" : "Iniciar sessão"}
         </button>
       </form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        Não tens conta?{" "}
         <Link href="/register" className="text-primary font-medium hover:underline">
-          Create one
+          Criar uma
         </Link>
       </p>
     </div>
