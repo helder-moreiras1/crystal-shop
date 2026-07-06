@@ -1,4 +1,5 @@
 import { createTRPCRouter, adminProcedure } from "@/server/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const adminRouter = createTRPCRouter({
@@ -47,6 +48,48 @@ export const adminRouter = createTRPCRouter({
         ]);
 
         return { items, total, totalPages: Math.ceil(total / limit) };
+      }),
+
+    byId: adminProcedure
+      .input(z.object({ id: z.string() }))
+      .query(async ({ ctx, input }) => {
+        const product = await ctx.db.product.findUnique({
+          where: { id: input.id },
+          include: {
+            category: true,
+            images: { orderBy: { position: "asc" } },
+          },
+        });
+
+        if (!product) throw new TRPCError({ code: "NOT_FOUND" });
+        return product;
+      }),
+
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.string(),
+          name: z.string().min(1, "O nome é obrigatório"),
+          description: z.string().min(1, "A descrição é obrigatória"),
+          price: z.number().positive("O preço deve ser positivo"),
+          stock: z.number().int().min(0, "O stock não pode ser negativo"),
+          sku: z.string().min(1).optional().nullable(),
+          categoryId: z.string().min(1, "A categoria é obrigatória"),
+          isActive: z.boolean(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const { id, sku, ...rest } = input;
+
+        const product = await ctx.db.product.update({
+          where: { id },
+          data: {
+            ...rest,
+            sku: sku && sku.length > 0 ? sku : null,
+          },
+        });
+
+        return product;
       }),
   }),
 

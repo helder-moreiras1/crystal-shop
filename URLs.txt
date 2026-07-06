@@ -1,0 +1,16 @@
+
+
+Crystal shop:
+
+DEV:
+http://localhost:3001
+
+✅  /login  — email + password login
+✅  /register  — sign up + email confirmation  
+✅  /account  — profile card + logout (just created)
+✅  /admin  — role-guarded ( ADMIN  only)
+
+
+SyncUser debug (Auth to Prisma)
+http://localhost:3001/api/debug/sync-user
+
