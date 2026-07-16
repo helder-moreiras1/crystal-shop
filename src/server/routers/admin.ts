@@ -76,10 +76,13 @@ export const adminRouter = createTRPCRouter({
           sku: z.string().min(1).optional().nullable(),
           categoryId: z.string().min(1, "A categoria é obrigatória"),
           isActive: z.boolean(),
+          imageUrl: z
+            .union([z.string().url("URL de imagem inválido"), z.literal("")])
+            .optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
-        const { id, sku, ...rest } = input;
+        const { id, sku, imageUrl, ...rest } = input;
 
         const product = await ctx.db.product.update({
           where: { id },
@@ -88,6 +91,25 @@ export const adminRouter = createTRPCRouter({
             sku: sku && sku.length > 0 ? sku : null,
           },
         });
+
+        // Primary image lives in ProductImage (position 0) — never on Product itself.
+        if (imageUrl !== undefined && imageUrl.length > 0) {
+          const primaryImage = await ctx.db.productImage.findFirst({
+            where: { productId: id },
+            orderBy: { position: "asc" },
+          });
+
+          if (primaryImage) {
+            await ctx.db.productImage.update({
+              where: { id: primaryImage.id },
+              data: { url: imageUrl },
+            });
+          } else {
+            await ctx.db.productImage.create({
+              data: { productId: id, url: imageUrl, position: 0 },
+            });
+          }
+        }
 
         return product;
       }),

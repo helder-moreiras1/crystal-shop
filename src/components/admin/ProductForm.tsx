@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Loader2, ImageOff } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export interface ProductFormValues {
   sku: string | null;
   categoryId: string;
   isActive: boolean;
+  imageUrl: string | null;
 }
 
 interface ProductFormProps {
@@ -44,6 +46,8 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const [sku, setSku] = React.useState(product.sku ?? "");
   const [categoryId, setCategoryId] = React.useState(product.categoryId);
   const [isActive, setIsActive] = React.useState(product.isActive);
+  const [imageUrl, setImageUrl] = React.useState(product.imageUrl ?? "");
+  const [imageError, setImageError] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const updateProduct = trpc.admin.products.update.useMutation({
@@ -83,11 +87,52 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       sku: sku.trim().length > 0 ? sku.trim() : null,
       categoryId,
       isActive,
+      imageUrl: imageUrl.trim(),
     });
   }
 
+  const trimmedImageUrl = imageUrl.trim();
+  const showPreview = trimmedImageUrl.length > 0 && !imageError;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+      {/* Main image */}
+      <div>
+        <Label>Imagem principal</Label>
+        <div className="relative h-40 w-40 overflow-hidden rounded-lg border border-border bg-muted">
+          {showPreview ? (
+            <Image
+              src={trimmedImageUrl}
+              alt={name || "Imagem do produto"}
+              fill
+              className="object-cover"
+              sizes="160px"
+              unoptimized
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+              <ImageOff className="h-8 w-8" />
+              <span className="text-xs">Sem imagem</span>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-3">
+          <Label htmlFor="imageUrl">URL da imagem</Label>
+          <Input
+            id="imageUrl"
+            type="url"
+            value={imageUrl}
+            onChange={(e) => {
+              setImageError(false);
+              setImageUrl(e.target.value);
+            }}
+            placeholder="https://…"
+          />
+        </div>
+      </div>
+
       <div>
         <Label htmlFor="name">Nome</Label>
         <Input
