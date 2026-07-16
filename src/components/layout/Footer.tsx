@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const footerLinks = {
   Loja: [
@@ -28,12 +29,9 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🔮</span>
-              <span className="text-base font-semibold text-foreground">Crystal Shop</span>
-            </Link>
+            <BrandLogo className="mb-4" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Cristais, pedras preciosas e pedras de cura selecionados à mão, com amor e intenção.
+              Cristais, pedras preciosas e pedras energéticas selecionadas à mão, com amor e intenção.
             </p>
           </div>
 
@@ -59,7 +57,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Crystal Shop. Todos os direitos reservados.
+            © {new Date().getFullYear()} Ametta Crystals. Todos os direitos reservados.
           </p>
           <p className="text-xs text-muted-foreground">
             Feito com 💜 para amantes de cristais

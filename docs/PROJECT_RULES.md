@@ -1,6 +1,6 @@
-# 🔮 Crystal Shop — Project Constitution
+# 🔮 Ametta Crystals — Project Constitution
 
-This document is the binding architecture and coding contract for Crystal Shop.
+This document is the binding architecture and coding contract for Ametta Crystals.
 All contributors (human or AI) must follow these rules. When in doubt, prefer
 consistency with existing code over introducing something new.
 
