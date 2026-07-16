@@ -33,6 +33,8 @@ Built with a spiritual/wellness aesthetic, high-quality imagery, and a seamless 
 | [docs/API_DESIGN.md](docs/API_DESIGN.md) | API design (tRPC routers & endpoints) |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Third-party service integrations |
 | [docs/FOLDER_STRUCTURE.md](docs/FOLDER_STRUCTURE.md) | Codebase layout & conventions |
+| [docs/PROJECT_RULES.md](docs/PROJECT_RULES.md) | Binding architecture & coding contract |
+| [docs/BRAND_GUIDELINES.md](docs/BRAND_GUIDELINES.md) | Ametta Crystals brand & naming guidelines |
 
 ---
 
