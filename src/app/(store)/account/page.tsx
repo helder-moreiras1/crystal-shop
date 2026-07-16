@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { db } from "@/lib/db";
 import { LogoutButton } from "@/components/account/LogoutButton";
 
 export const metadata: Metadata = {
@@ -14,6 +15,24 @@ export default async function AccountPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  // Ensure this Supabase user has a matching Prisma record
+  if (user.email) {
+    try {
+      await db.user.upsert({
+        where: { id: user.id },
+        update: {},
+        create: {
+          id: user.id,
+          email: user.email,
+          name: (user.user_metadata?.full_name as string) ?? null,
+          role: "CUSTOMER",
+        },
+      });
+    } catch (err) {
+        console.error("[account] Failed to sync user to Prisma:", err);
+    }
+  }
 
   const name = user.user_metadata?.full_name ?? "Utilizador";
   const initials = name

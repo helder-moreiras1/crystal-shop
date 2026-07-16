@@ -7,8 +7,8 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export const metadata: Metadata = {
   title: {
-    default: "Admin | Crystal Shop",
-    template: "%s | Admin — Crystal Shop",
+    default: "Admin | Ametta Crystals",
+    template: "%s | Admin — Ametta Crystals",
   },
 };
 

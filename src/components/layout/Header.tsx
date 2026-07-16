@@ -5,6 +5,7 @@ import { Search, User, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Navigation } from "./Navigation";
 import { CartBadge } from "@/components/cart/CartBadge";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { cn } from "@/utils/cn";
 
 const mobileLinks = [
@@ -22,12 +23,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl">🔮</span>
-            <span className="text-lg font-semibold tracking-tight text-foreground">
-              Crystal Shop
-            </span>
-          </Link>
+          <BrandLogo className="shrink-0" />
 
           {/* Desktop navigation */}
           <Navigation />

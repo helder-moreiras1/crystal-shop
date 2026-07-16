@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, ShoppingBag, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -56,11 +57,7 @@ export function AdminSidebar() {
       >
         {/* Brand */}
         <div className="flex items-center gap-3 px-5 py-5 border-b border-border">
-          <span className="text-2xl">🔮</span>
-          <div>
-            <p className="text-sm font-bold text-foreground leading-none">Crystal Shop</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Painel Admin</p>
-          </div>
+          <BrandLogo size="sm" subtitle="Painel Admin" href={null} />
         </div>
 
         {/* Nav links */}
