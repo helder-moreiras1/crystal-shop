@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import { ProductCard } from "./ProductCard";
 import { cn } from "@/utils/cn";
 
@@ -22,7 +23,9 @@ export function ProductGrid({ products, className }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <span className="text-5xl mb-4">🔍</span>
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent mb-4">
+          <Search className="h-6 w-6 text-primary" strokeWidth={1.75} />
+        </span>
         <h3 className="text-lg font-semibold text-foreground mb-2">
           No products found
         </h3>

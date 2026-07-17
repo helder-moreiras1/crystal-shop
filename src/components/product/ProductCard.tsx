@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Gem } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/utils/cn";
 import { QuickAddButton } from "./QuickAddButton";
@@ -64,8 +65,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl">
-            🔮
+          <div className="flex h-full items-center justify-center text-muted-foreground/40">
+            <Gem className="h-10 w-10" strokeWidth={1.5} />
           </div>
         )}
 
