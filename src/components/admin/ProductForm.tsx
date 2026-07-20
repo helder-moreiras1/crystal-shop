@@ -19,7 +19,7 @@ export interface ProductFormCategory {
 }
 
 export interface ProductFormValues {
-  id: string;
+  id: string | null;
   name: string;
   description: string;
   price: number;
@@ -38,6 +38,7 @@ interface ProductFormProps {
 export function ProductForm({ product, categories }: ProductFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const isEditing = product.id !== null;
 
   const [name, setName] = React.useState(product.name);
   const [description, setDescription] = React.useState(product.description);
@@ -50,6 +51,18 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const [imageError, setImageError] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  const createProduct = trpc.admin.products.create.useMutation({
+    onSuccess: () => {
+      toast({ title: "Produto criado com sucesso!" });
+      router.push("/admin/products");
+      router.refresh();
+    },
+    onError: (err) => {
+      setError(err.message);
+      toast({ title: "Falha ao criar o produto.", variant: "error" });
+    },
+  });
+
   const updateProduct = trpc.admin.products.update.useMutation({
     onSuccess: () => {
       toast({ title: "Produto atualizado com sucesso!" });
@@ -61,6 +74,8 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       toast({ title: "Falha ao atualizar o produto.", variant: "error" });
     },
   });
+
+  const isPending = createProduct.isPending || updateProduct.isPending;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,8 +93,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       return;
     }
 
-    updateProduct.mutate({
-      id: product.id,
+    const values = {
       name,
       description,
       price: parsedPrice,
@@ -88,7 +102,13 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       categoryId,
       isActive,
       imageUrl: imageUrl.trim(),
-    });
+    };
+
+    if (isEditing) {
+      updateProduct.mutate({ id: product.id as string, ...values });
+    } else {
+      createProduct.mutate(values);
+    }
   }
 
   const trimmedImageUrl = imageUrl.trim();
@@ -222,21 +242,23 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       )}
 
       <div className="flex items-center gap-3 pt-2">
-        <Button type="submit" disabled={updateProduct.isPending}>
-          {updateProduct.isPending ? (
+        <Button type="submit" disabled={isPending}>
+          {isPending ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
               A guardar…
             </>
-          ) : (
+          ) : isEditing ? (
             "Guardar alterações"
+          ) : (
+            "Criar Produto"
           )}
         </Button>
         <Button
           type="button"
           variant="outline"
           onClick={() => router.push("/admin/products")}
-          disabled={updateProduct.isPending}
+          disabled={isPending}
         >
           Cancelar
         </Button>
