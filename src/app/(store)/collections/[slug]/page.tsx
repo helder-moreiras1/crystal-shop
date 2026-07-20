@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: CollectionPageProps): Promise
   if (!collection) return { title: "Collection Not Found" };
 
   return {
-    title: `${collection.name} | Crystal Shop`,
+    title: `${collection.name} | Ametta Crystals`,
     description: collection.description ?? `Shop our ${collection.name} collection.`,
     openGraph: collection.imageUrl
       ? { images: [{ url: collection.imageUrl }] }

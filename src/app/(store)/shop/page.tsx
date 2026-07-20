@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const metadata = {
   title: "Loja de Cristais",
-  description: "Explora a nossa coleção completa de cristais, pedras preciosas e pedras de cura.",
+  description: "Explora a nossa coleção completa de cristais, pedras preciosas e pedras energéticas.",
 };
 
 interface ShopPageProps {

@@ -2,7 +2,7 @@
 
 ## System Design
 
-Crystal Shop is a monorepo Next.js application combining frontend and backend in a single codebase,
+Ametta Crystals is a monorepo Next.js application combining frontend and backend in a single codebase,
 deployed on Vercel with Supabase as the managed data platform.
 
 ---

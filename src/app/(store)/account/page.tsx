@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { LogoutButton } from "@/components/account/LogoutButton";
 
 export const metadata: Metadata = {
-  title: "A minha conta | Crystal Shop",
+  title: "A minha conta | Ametta Crystals",
 };
 
 export default async function AccountPage() {

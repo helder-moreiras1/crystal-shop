@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Crystal Shop — Cristais e Pedras Preciosas",
-    template: "%s | Crystal Shop",
+    default: "Ametta Crystals — Cristais e Pedras Preciosas",
+    template: "%s | Ametta Crystals",
   },
   description:
-    "Descobre cristais, pedras preciosas e pedras de cura únicas. Cristais em bruto, pedras roladas, torres e joias, selecionados à mão.",
+    "Descobre cristais, pedras preciosas e pedras energéticas únicas. Cristais em bruto, pedras roladas, torres e joias, selecionados à mão.",
   openGraph: {
     type: "website",
     locale: "pt_PT",
-    siteName: "Crystal Shop",
+    siteName: "Ametta Crystals",
   },
 };
 
