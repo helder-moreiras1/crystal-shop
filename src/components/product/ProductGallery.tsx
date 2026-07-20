@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Gem } from "lucide-react";
 
 interface ProductImage {
   id: string;
@@ -25,8 +25,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="aspect-square w-full bg-muted rounded-2xl flex items-center justify-center text-6xl">
-        🔮
+      <div className="aspect-square w-full bg-muted rounded-2xl flex items-center justify-center text-muted-foreground/40">
+        <Gem className="h-16 w-16" strokeWidth={1.5} />
       </div>
     );
   }

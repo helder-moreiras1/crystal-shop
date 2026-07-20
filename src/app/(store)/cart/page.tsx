@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Gem } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatCurrency } from "@/utils/formatCurrency";
 
@@ -55,7 +55,9 @@ export default function CartPage() {
                       sizes="96px"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-3xl">🔮</div>
+                    <div className="flex h-full items-center justify-center text-muted-foreground/40">
+                      <Gem className="h-8 w-8" strokeWidth={1.5} />
+                    </div>
                   )}
                 </div>
 

@@ -1,16 +1,14 @@
 import Link from "next/link";
+import { Gem, Sparkles, Gift, Globe, Hand, Package, type LucideIcon } from "lucide-react";
 import { api } from "@/lib/trpc/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ProductGrid } from "@/components/product/ProductGrid";
 
-const CATEGORY_ICONS: Record<string, string> = {
-  crystals: "💎",
-  "raw-crystals": "🪨",
-  "tumbled-stones": "✨",
-  "crystal-clusters": "🌟",
-  "crystal-jewelry": "💍",
-  "crystal-sets": "🎁",
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  crystals: Gem,
+  "crystal-jewelry": Sparkles,
+  "crystal-sets": Gift,
 };
 
 export default async function HomePage() {
@@ -89,18 +87,23 @@ export default async function HomePage() {
               </h2>
               <p className="text-muted-foreground mb-8">Cada cristal tem o seu dono — descobre o teu</p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                {categories.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={`/shop?category=${cat.id}`}
-                    className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-background p-6 text-center hover:border-primary/40 hover:shadow-md transition-all"
-                  >
-                    <span className="text-4xl">{CATEGORY_ICONS[cat.slug] ?? "🔮"}</span>
-                    <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                      {cat.name}
-                    </span>
-                  </Link>
-                ))}
+                {categories.map((cat) => {
+                  const Icon = CATEGORY_ICONS[cat.slug] ?? Gem;
+                  return (
+                    <Link
+                      key={cat.id}
+                      href={`/shop?category=${cat.id}`}
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-background p-6 text-center hover:border-primary/40 hover:shadow-md transition-all"
+                    >
+                      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+                        <Icon className="h-6 w-6 text-primary" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                        {cat.name}
+                      </span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </section>
@@ -112,23 +115,25 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
               {[
                 {
-                  icon: "🌍",
+                  icon: Globe,
                   title: "Origem Consciente",
                   desc: "Todos os nossos cristais provêm de fornecedores responsáveis e de confiança, de todo o mundo.",
                 },
                 {
-                  icon: "✋",
+                  icon: Hand,
                   title: "Selecionado à Mão",
                   desc: "Cada peça é escolhida pessoalmente pela sua beleza, energia e qualidade únicas.",
                 },
                 {
-                  icon: "📦",
+                  icon: Package,
                   title: "Embalado com Cuidado",
                   desc: "Embalamos cada encomenda com carinho para que o teu cristal chegue perfeito, pronto a ser teu.",
                 },
-              ].map(({ icon, title, desc }) => (
+              ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex flex-col items-center text-center gap-3">
-                  <span className="text-4xl">{icon}</span>
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+                    <Icon className="h-6 w-6 text-primary" strokeWidth={1.75} />
+                  </span>
                   <h3 className="text-base font-semibold text-foreground">{title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
                 </div>

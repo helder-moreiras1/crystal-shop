@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Plus } from "lucide-react";
 import { api } from "@/lib/trpc/server";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/utils/cn";
@@ -26,6 +27,13 @@ export default async function AdminProductsPage({ searchParams }: ProductsPagePr
           <h1 className="text-2xl font-bold text-foreground">Produtos</h1>
           <p className="text-muted-foreground mt-0.5 text-sm">{total} produtos registados</p>
         </div>
+        <Link
+          href="/admin/products/new"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          <Plus className="h-4 w-4" />
+          Novo Produto
+        </Link>
       </div>
 
       {/* Table */}

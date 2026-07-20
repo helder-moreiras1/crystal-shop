@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const footerLinks = {
@@ -59,8 +60,8 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Ametta Crystals. Todos os direitos reservados.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Feito com 💜 para amantes de cristais
+          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            Feito com <Heart className="h-3.5 w-3.5 text-primary" strokeWidth={1.75} fill="currentColor" /> para amantes de cristais
           </p>
         </div>
       </div>

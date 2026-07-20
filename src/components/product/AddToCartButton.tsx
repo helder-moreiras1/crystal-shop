@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, Loader2 } from "lucide-react";
+import { ShoppingBag, Loader2, Check } from "lucide-react";
 import { useState } from "react";
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/utils/cn";
@@ -87,13 +87,15 @@ export function AddToCartButton({ productId, stock, className }: AddToCartButton
       >
         {addItem.isPending ? (
           <Loader2 className="h-4 w-4 animate-spin" />
+        ) : added ? (
+          <Check className="h-4 w-4" />
         ) : (
           <ShoppingBag className="h-4 w-4" />
         )}
         {isOutOfStock
           ? "Esgotado"
           : added
-          ? "Adicionado ✓"
+          ? "Adicionado"
           : "Adicionar ao Carrinho"}
       </button>
     </div>

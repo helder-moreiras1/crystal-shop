@@ -1,12 +1,13 @@
 import Link from "next/link";
+import { Gem } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 type BrandLogoSize = "sm" | "md" | "lg";
 
-const SIZES: Record<BrandLogoSize, { icon: string; wordmark: string }> = {
-  sm: { icon: "text-2xl", wordmark: "text-sm font-bold leading-none" },
-  md: { icon: "text-2xl", wordmark: "text-lg font-semibold tracking-tight" },
-  lg: { icon: "text-3xl", wordmark: "text-xl font-semibold" },
+const SIZES: Record<BrandLogoSize, { badge: string; icon: string; wordmark: string }> = {
+  sm: { badge: "h-8 w-8", icon: "h-4 w-4", wordmark: "text-sm font-bold leading-none" },
+  md: { badge: "h-8 w-8", icon: "h-4 w-4", wordmark: "text-lg font-semibold tracking-tight" },
+  lg: { badge: "h-10 w-10", icon: "h-5 w-5", wordmark: "text-xl font-semibold" },
 };
 
 interface BrandLogoProps {
@@ -25,11 +26,13 @@ interface BrandLogoProps {
  * consistent per docs/BRAND_GUIDELINES.md.
  */
 export function BrandLogo({ size = "md", subtitle, href = "/", className }: BrandLogoProps) {
-  const { icon, wordmark } = SIZES[size];
+  const { badge, icon, wordmark } = SIZES[size];
 
   const content = (
     <>
-      <span className={icon}>🔮</span>
+      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-accent", badge)}>
+        <Gem className={cn(icon, "text-primary")} strokeWidth={1.75} />
+      </span>
       {subtitle ? (
         <span className="flex flex-col">
           <span className={cn(wordmark, "text-foreground")}>Ametta Crystals</span>
