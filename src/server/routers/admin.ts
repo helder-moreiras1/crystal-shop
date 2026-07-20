@@ -12,9 +12,8 @@ const productInputSchema = z.object({
   sku: z.string().min(1).optional().nullable(),
   categoryId: z.string().min(1, "A categoria é obrigatória"),
   isActive: z.boolean(),
-  imageUrl: z
-    .union([z.string().url("URL de imagem inválido"), z.literal("")])
-    .optional(),
+  // Ordered image URLs — index 0 is always the primary image (ProductImage.position = 0).
+  images: z.array(z.string().url("URL de imagem inválido")).max(10, "Máximo de 10 imagens").default([]),
 });
 
 export const adminRouter = createTRPCRouter({
@@ -83,7 +82,7 @@ export const adminRouter = createTRPCRouter({
     create: adminProcedure
       .input(productInputSchema)
       .mutation(async ({ ctx, input }) => {
-        const { sku, imageUrl, name, ...rest } = input;
+        const { sku, images, name, ...rest } = input;
 
         const baseSlug = slugify(name);
         let slug = baseSlug;
@@ -101,8 +100,8 @@ export const adminRouter = createTRPCRouter({
             sku: sku && sku.length > 0 ? sku : null,
             // Primary image lives in ProductImage (position 0) — never on Product itself.
             images:
-              imageUrl && imageUrl.length > 0
-                ? { create: [{ url: imageUrl, position: 0 }] }
+              images.length > 0
+                ? { create: images.map((url, position) => ({ url, position })) }
                 : undefined,
           },
         });
@@ -113,36 +112,58 @@ export const adminRouter = createTRPCRouter({
     update: adminProcedure
       .input(productInputSchema.extend({ id: z.string() }))
       .mutation(async ({ ctx, input }) => {
-        const { id, sku, imageUrl, ...rest } = input;
+        const { id, sku, images, ...rest } = input;
 
-        const product = await ctx.db.product.update({
-          where: { id },
-          data: {
-            ...rest,
-            sku: sku && sku.length > 0 ? sku : null,
-          },
-        });
-
-        // Primary image lives in ProductImage (position 0) — never on Product itself.
-        if (imageUrl !== undefined && imageUrl.length > 0) {
-          const primaryImage = await ctx.db.productImage.findFirst({
-            where: { productId: id },
-            orderBy: { position: "asc" },
-          });
-
-          if (primaryImage) {
-            await ctx.db.productImage.update({
-              where: { id: primaryImage.id },
-              data: { url: imageUrl },
-            });
-          } else {
-            await ctx.db.productImage.create({
-              data: { productId: id, url: imageUrl, position: 0 },
-            });
-          }
-        }
+        // Sync the full gallery: replace all ProductImage rows for this product
+        // with the ordered list provided (index 0 stays the primary image).
+        const [product] = await ctx.db.$transaction([
+          ctx.db.product.update({
+            where: { id },
+            data: {
+              ...rest,
+              sku: sku && sku.length > 0 ? sku : null,
+            },
+          }),
+          ctx.db.productImage.deleteMany({ where: { productId: id } }),
+          ...(images.length > 0
+            ? [
+                ctx.db.productImage.createMany({
+                  data: images.map((url, position) => ({ productId: id, url, position })),
+                }),
+              ]
+            : []),
+        ]);
 
         return product;
+      }),
+
+    remove: adminProcedure
+      .input(z.object({ id: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const { id } = input;
+
+        const product = await ctx.db.product.findUnique({ where: { id } });
+        if (!product) throw new TRPCError({ code: "NOT_FOUND" });
+
+        // Order history, active carts and wishlists must never be silently broken.
+        // If the product is referenced anywhere, archive it instead of deleting it.
+        const [orderItemCount, cartItemCount, wishlistCount] = await Promise.all([
+          ctx.db.orderItem.count({ where: { productId: id } }),
+          ctx.db.cartItem.count({ where: { productId: id } }),
+          ctx.db.wishlistProduct.count({ where: { productId: id } }),
+        ]);
+
+        if (orderItemCount > 0 || cartItemCount > 0 || wishlistCount > 0) {
+          await ctx.db.product.update({ where: { id }, data: { isActive: false } });
+          return { status: "archived" as const };
+        }
+
+        await ctx.db.$transaction([
+          ctx.db.productImage.deleteMany({ where: { productId: id } }),
+          ctx.db.product.delete({ where: { id } }),
+        ]);
+
+        return { status: "deleted" as const };
       }),
   }),
 

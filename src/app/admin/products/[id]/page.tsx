@@ -48,7 +48,7 @@ export default async function AdminEditProductPage({ params }: AdminEditProductP
           sku: product.sku,
           categoryId: product.categoryId,
           isActive: product.isActive,
-          imageUrl: product.images[0]?.url ?? null,
+          images: product.images.map((img) => img.url),
         }}
         categories={categories}
       />

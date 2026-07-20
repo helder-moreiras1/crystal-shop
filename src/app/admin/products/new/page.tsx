@@ -34,7 +34,7 @@ export default async function AdminNewProductPage() {
           sku: null,
           categoryId: categories[0]?.id ?? "",
           isActive: true,
-          imageUrl: null,
+          images: [],
         }}
         categories={categories}
       />
