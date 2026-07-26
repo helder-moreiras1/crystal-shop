@@ -191,5 +191,45 @@ export const adminRouter = createTRPCRouter({
 
         return { items, total, totalPages: Math.ceil(total / limit) };
       }),
+
+    byId: adminProcedure
+      .input(z.object({ id: z.string().min(1) }))
+      .query(async ({ ctx, input }) => {
+        const order = await ctx.db.order.findUnique({
+          where: { id: input.id },
+          include: {
+            user: { select: { id: true, email: true, name: true } },
+            items: {
+              include: {
+                product: {
+                  include: { images: { orderBy: { position: "asc" }, take: 1 } },
+                },
+              },
+            },
+          },
+        });
+
+        if (!order) throw new TRPCError({ code: "NOT_FOUND" });
+        return order;
+      }),
+
+    updateStatus: adminProcedure
+      .input(
+        z.object({
+          id: z.string().min(1),
+          status: z.enum(["PENDING", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"]),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const order = await ctx.db.order.findUnique({ where: { id: input.id } });
+        if (!order) throw new TRPCError({ code: "NOT_FOUND" });
+
+        const updated = await ctx.db.order.update({
+          where: { id: input.id },
+          data: { status: input.status },
+        });
+
+        return updated;
+      }),
   }),
 });
