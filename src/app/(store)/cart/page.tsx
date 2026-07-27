@@ -143,7 +143,7 @@ export default function CartPage() {
               href="/checkout"
               className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              Finalizar Compra
+              Finalizar Encomenda
               <ArrowRight className="h-4 w-4" />
             </Link>
 

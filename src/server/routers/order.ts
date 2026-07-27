@@ -79,6 +79,93 @@ export const orderRouter = createTRPCRouter({
       return order;
     }),
 
+  // ─── Checkout: create a real Order from the customer's current cart ────
+  createFromCart: protectedProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        phone: z.string().optional(),
+        shipping: addressSchema,
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const cart = await ctx.db.cart.findUnique({
+        where: { userId: ctx.user.id },
+        include: { items: { include: { product: true } } },
+      });
+
+      if (!cart || cart.items.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "O carrinho está vazio.",
+        });
+      }
+
+      // Re-validate stock against current product data before creating the order.
+      for (const item of cart.items) {
+        if (!item.product.isActive) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `O produto "${item.product.name}" já não está disponível.`,
+          });
+        }
+        if (item.product.stock < item.quantity) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Stock insuficiente para "${item.product.name}". Disponível: ${item.product.stock}.`,
+          });
+        }
+      }
+
+      const orderItems = cart.items.map((item) => {
+        const unitPrice = item.product.price;
+        const totalPrice = unitPrice.mul(item.quantity);
+        return {
+          productId: item.productId,
+          productName: item.product.name,
+          quantity: item.quantity,
+          unitPrice,
+          totalPrice,
+        };
+      });
+
+      const subtotal = orderItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
+      // Shipping cost is a placeholder until real shipping rates are implemented.
+      const shippingCost = 0;
+      const total = subtotal + shippingCost;
+
+      const order = await ctx.db.$transaction(async (tx) => {
+        const created = await tx.order.create({
+          data: {
+            userId: ctx.user.id,
+            email: input.email,
+            status: "PENDING",
+            subtotal,
+            discountAmount: 0,
+            shippingCost,
+            tax: 0,
+            total,
+            shippingName: input.shipping.name,
+            shippingLine1: input.shipping.line1,
+            shippingLine2: input.shipping.line2 || null,
+            shippingCity: input.shipping.city,
+            shippingState: input.shipping.state || null,
+            shippingPostalCode: input.shipping.postalCode,
+            shippingCountry: input.shipping.country,
+            notes: input.phone ? `Telefone: ${input.phone}` : null,
+            items: { create: orderItems },
+          },
+        });
+
+        // Clear the cart only after the order is successfully created.
+        await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+        return created;
+      });
+
+      return order;
+    }),
+
   // ─── DEV-ONLY: seed a test order to validate the order workflow UI ─────
   // Never usable in production — checkout is not implemented yet, so this
   // is the only way to generate realistic Order/OrderItem rows for testing.
