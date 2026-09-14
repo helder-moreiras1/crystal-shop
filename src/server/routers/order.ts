@@ -1,16 +1,7 @@
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-
-const addressSchema = z.object({
-  name: z.string().min(1),
-  line1: z.string().min(1),
-  line2: z.string().optional(),
-  city: z.string().min(1),
-  state: z.string().optional(),
-  postalCode: z.string().min(1),
-  country: z.string().length(2),
-});
+import { checkoutInputSchema, shippingAddressSchema as addressSchema } from "@/lib/validation/checkout";
 
 export const orderRouter = createTRPCRouter({
   createIntent: publicProcedure
@@ -80,70 +71,80 @@ export const orderRouter = createTRPCRouter({
     }),
 
   // ─── Checkout: create a real Order from the customer's current cart ────
+  // Stock decision: PENDING orders do NOT reduce stock. Stock is only
+  // validated (not reserved) at this stage. Actual stock reduction happens
+  // once payment is confirmed (Stripe integration), to avoid holding stock
+  // hostage for abandoned/never-paid orders.
   createFromCart: protectedProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        phone: z.string().optional(),
-        shipping: addressSchema,
-      })
-    )
+    .input(checkoutInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const cart = await ctx.db.cart.findUnique({
-        where: { userId: ctx.user.id },
-        include: { items: { include: { product: true } } },
-      });
-
-      if (!cart || cart.items.length === 0) {
+      // Resolve the authenticated Prisma user explicitly — Cart/Order both
+      // have a FK to User, so this also guarantees the row exists before we
+      // try to attach anything to it.
+      const dbUser = await ctx.db.user.findUnique({ where: { id: ctx.user.id } });
+      if (!dbUser) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "O carrinho está vazio.",
+          code: "PRECONDITION_FAILED",
+          message: "Conta não encontrada. Por favor inicia sessão novamente.",
         });
       }
 
-      // Re-validate stock against current product data before creating the order.
-      for (const item of cart.items) {
-        if (!item.product.isActive) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `O produto "${item.product.name}" já não está disponível.`,
-          });
-        }
-        if (item.product.stock < item.quantity) {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: `Stock insuficiente para "${item.product.name}". Disponível: ${item.product.stock}.`,
-          });
-        }
-      }
-
-      const orderItems = cart.items.map((item) => {
-        const unitPrice = item.product.price;
-        const totalPrice = unitPrice.mul(item.quantity);
-        return {
-          productId: item.productId,
-          productName: item.product.name,
-          quantity: item.quantity,
-          unitPrice,
-          totalPrice,
-        };
-      });
-
-      const subtotal = orderItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
-      // Shipping cost is a placeholder until real shipping rates are implemented.
-      const shippingCost = 0;
-      const total = subtotal + shippingCost;
-
       const order = await ctx.db.$transaction(async (tx) => {
+        // Prefer the cart linked to the authenticated user (guest sessionId
+        // carts are out of scope for now — see docs/DATABASE_SCHEMA.md).
+        const cart = await tx.cart.findUnique({
+          where: { userId: dbUser.id },
+          include: { items: { include: { product: true } } },
+        });
+
+        if (!cart || cart.items.length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "O carrinho está vazio.",
+          });
+        }
+
+        // Re-validate products and stock against current DB data — never
+        // trust anything about price/stock/name coming from the client.
+        const hasInvalidItem = cart.items.some(
+          (item) => !item.product || !item.product.isActive || item.product.stock < item.quantity
+        );
+        if (hasInvalidItem) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Stock insuficiente para um ou mais produtos. Atualize o carrinho antes de continuar.",
+          });
+        }
+
+        const orderItems = cart.items.map((item) => {
+          const unitPrice = item.product.price;
+          const totalPrice = unitPrice.mul(item.quantity);
+          return {
+            productId: item.productId,
+            productName: item.product.name,
+            quantity: item.quantity,
+            unitPrice,
+            totalPrice,
+          };
+        });
+
+        const subtotal = orderItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
+        // Shipping cost and tax are placeholders until real rates/Stripe Tax
+        // are implemented. Discounts require the coupon flow (not yet built).
+        const shippingCost = 0;
+        const discountAmount = 0;
+        const tax = 0;
+        const total = subtotal + shippingCost + tax - discountAmount;
+
         const created = await tx.order.create({
           data: {
-            userId: ctx.user.id,
+            userId: dbUser.id,
             email: input.email,
             status: "PENDING",
             subtotal,
-            discountAmount: 0,
+            discountAmount,
             shippingCost,
-            tax: 0,
+            tax,
             total,
             shippingName: input.shipping.name,
             shippingLine1: input.shipping.line1,
@@ -152,12 +153,17 @@ export const orderRouter = createTRPCRouter({
             shippingState: input.shipping.state || null,
             shippingPostalCode: input.shipping.postalCode,
             shippingCountry: input.shipping.country,
+            // The schema has no dedicated phone column; storing it in `notes`
+            // is the minimal option that avoids a schema change (see
+            // docs/DATABASE_SCHEMA.md for the rationale).
             notes: input.phone ? `Telefone: ${input.phone}` : null,
             items: { create: orderItems },
           },
         });
 
-        // Clear the cart only after the order is successfully created.
+        // Clear the cart only after the order + items were created — if
+        // anything above threw, the whole transaction rolls back and the
+        // cart is preserved untouched.
         await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
 
         return created;
@@ -167,8 +173,9 @@ export const orderRouter = createTRPCRouter({
     }),
 
   // ─── DEV-ONLY: seed a test order to validate the order workflow UI ─────
-  // Never usable in production — checkout is not implemented yet, so this
-  // is the only way to generate realistic Order/OrderItem rows for testing.
+  // Payments are not implemented yet (orders stop at PENDING), so this
+  // remains useful to quickly generate Order/OrderItem rows without going
+  // through the full cart → checkout flow.
   devSeedOrder: protectedProcedure
     .input(
       z.object({

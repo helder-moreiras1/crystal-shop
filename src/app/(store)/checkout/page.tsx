@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Gem, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { syncUserToPrisma } from "@/lib/auth/syncUser";
 import { api } from "@/lib/trpc/server";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { CheckoutForm } from "./CheckoutForm";
@@ -16,8 +17,13 @@ export default async function CheckoutPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Checkout requires an authenticated account.
-  if (!user) redirect("/login");
+  // Checkout requires an authenticated account. Preserve a return URL so the
+  // customer comes back here right after logging in.
+  if (!user) redirect("/login?next=/checkout");
+
+  // Make sure the Prisma User row exists (e.g. first checkout after an OAuth
+  // login that never hit the /auth/callback sync step).
+  await syncUserToPrisma(user.id, user.email, user.user_metadata);
 
   const caller = await api();
   const cart = await caller.cart.get({});
@@ -46,16 +52,32 @@ export default async function CheckoutPage() {
     0
   );
   const shippingCost = 0;
-  const total = subtotal + shippingCost;
+  const discountAmount = 0;
+  const tax = 0;
+  const total = subtotal + shippingCost + tax - discountAmount;
+
+  const outOfStockItems = cart.items.filter(
+    (item) => !item.product.isActive || item.product.stock < item.quantity
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-2xl font-semibold text-foreground mb-8">Finalizar Encomenda</h1>
 
+      {outOfStockItems.length > 0 && (
+        <div className="mb-8 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          Stock insuficiente para um ou mais produtos. Atualize o carrinho antes de continuar.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
         {/* Shipping form */}
         <div className="lg:col-span-2">
-          <CheckoutForm defaultEmail={user.email ?? ""} defaultName={(user.user_metadata?.full_name as string) ?? ""} />
+          <CheckoutForm
+            defaultEmail={user.email ?? ""}
+            defaultName={(user.user_metadata?.full_name as string) ?? ""}
+            disabled={outOfStockItems.length > 0}
+          />
         </div>
 
         {/* Order summary */}
@@ -85,6 +107,9 @@ export default async function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{item.product.name}</p>
+                      {item.product.sku && (
+                        <p className="text-xs text-muted-foreground/70">SKU: {item.product.sku}</p>
+                      )}
                       <p className="text-xs text-muted-foreground">
                         {formatCurrency(item.product.price)} × {item.quantity}
                       </p>
@@ -106,6 +131,18 @@ export default async function CheckoutPage() {
                 <span>Envio</span>
                 <span>{formatCurrency(shippingCost)}</span>
               </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Desconto</span>
+                  <span>-{formatCurrency(discountAmount)}</span>
+                </div>
+              )}
+              {tax > 0 && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>IVA</span>
+                  <span>{formatCurrency(tax)}</span>
+                </div>
+              )}
             </div>
 
             <div className="border-t border-border pt-4 flex justify-between font-semibold text-foreground">

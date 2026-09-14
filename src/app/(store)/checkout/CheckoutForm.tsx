@@ -8,13 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { checkoutInputSchema } from "@/lib/validation/checkout";
 
 interface CheckoutFormProps {
   defaultEmail: string;
   defaultName: string;
+  disabled?: boolean;
 }
 
-export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
+export function CheckoutForm({ defaultEmail, defaultName, disabled }: CheckoutFormProps) {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -28,6 +30,7 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
     postalCode: "",
     country: "PT",
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const createOrder = trpc.order.createFromCart.useMutation({
     onSuccess: (order) => {
@@ -45,7 +48,8 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createOrder.mutate({
+
+    const input = {
       email: form.email,
       phone: form.phone || undefined,
       shipping: {
@@ -56,7 +60,23 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
         postalCode: form.postalCode,
         country: form.country,
       },
-    });
+    };
+
+    // Client-side validation mirrors the server schema so the customer gets
+    // instant feedback before the request even reaches the API.
+    const result = checkoutInputSchema.safeParse(input);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      for (const issue of result.error.issues) {
+        errors[issue.path.join(".")] = issue.message;
+      }
+      setFieldErrors(errors);
+      toast({ title: "Verifica os dados de entrega preenchidos.", variant: "error" });
+      return;
+    }
+
+    setFieldErrors({});
+    createOrder.mutate(result.data);
   };
 
   return (
@@ -73,6 +93,9 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
             onChange={handleChange("name")}
             placeholder="O teu nome completo"
           />
+          {fieldErrors["shipping.name"] && (
+            <p className="mt-1 text-xs text-destructive">{fieldErrors["shipping.name"]}</p>
+          )}
         </div>
 
         <div>
@@ -85,6 +108,7 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
             onChange={handleChange("email")}
             placeholder="teu@email.com"
           />
+          {fieldErrors.email && <p className="mt-1 text-xs text-destructive">{fieldErrors.email}</p>}
         </div>
       </div>
 
@@ -108,6 +132,9 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
           onChange={handleChange("line1")}
           placeholder="Rua, número"
         />
+        {fieldErrors["shipping.line1"] && (
+          <p className="mt-1 text-xs text-destructive">{fieldErrors["shipping.line1"]}</p>
+        )}
       </div>
 
       <div>
@@ -130,6 +157,9 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
             onChange={handleChange("city")}
             placeholder="Lisboa"
           />
+          {fieldErrors["shipping.city"] && (
+            <p className="mt-1 text-xs text-destructive">{fieldErrors["shipping.city"]}</p>
+          )}
         </div>
 
         <div>
@@ -141,6 +171,9 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
             onChange={handleChange("postalCode")}
             placeholder="1000-001"
           />
+          {fieldErrors["shipping.postalCode"] && (
+            <p className="mt-1 text-xs text-destructive">{fieldErrors["shipping.postalCode"]}</p>
+          )}
         </div>
 
         <div>
@@ -158,7 +191,7 @@ export function CheckoutForm({ defaultEmail, defaultName }: CheckoutFormProps) {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" size="lg" disabled={createOrder.isPending}>
+      <Button type="submit" className="w-full" size="lg" disabled={disabled || createOrder.isPending}>
         {createOrder.isPending ? "A criar encomenda…" : "Confirmar Encomenda"}
       </Button>
     </form>
