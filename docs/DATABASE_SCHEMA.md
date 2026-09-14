@@ -306,6 +306,34 @@ model WishlistProduct {
 
 ---
 
+## Checkout Implementation Notes
+
+These notes document deliberate, temporary decisions made while implementing
+the Cart → Checkout → Order flow (no payments yet):
+
+1. **Phone number storage** — the `Order` model has no dedicated `phone`
+   column. Rather than modify the schema for a single optional field, the
+   checkout mutation stores it as `Telefone: <value>` inside the existing
+   `notes` field. If phone becomes a first-class requirement (e.g. shown in
+   admin filters/exports), add a proper `shippingPhone String?` column via a
+   migration at that point.
+2. **Guest cart → user cart merge is not implemented.** `Cart.userId` and
+   `Cart.sessionId` are both unique, and `cart.get`/`cart.addItem` already
+   prefer `userId` once a customer is authenticated, but items added to a
+   guest (`sessionId`-only) cart before login are **not** transferred to the
+   user's cart automatically. `order.createFromCart` only ever reads the cart
+   linked to `userId`. This is a known limitation — implementing a merge
+   requires deciding a conflict strategy (sum quantities vs. keep newest) and
+   is left for a follow-up change.
+3. **Stock is validated, not reserved, at PENDING.** `order.createFromCart`
+   checks `product.isActive` and `product.stock >= quantity` before creating
+   the order, but does **not** decrement `Product.stock`. Stock will be
+   decremented once a payment is confirmed (Stripe `payment_intent.succeeded`
+   webhook), per `docs/API_DESIGN.md`. This avoids holding stock hostage for
+   abandoned/never-paid PENDING orders.
+
+---
+
 ## Indexes
 
 ```sql

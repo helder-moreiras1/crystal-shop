@@ -14,3 +14,9 @@ http://localhost:3001
 SyncUser debug (Auth to Prisma)
 http://localhost:3001/api/debug/sync-user
 
+
+
+
+Before any prompt:
+
+Read docs/PROJECT_RULES.md first and follow all architecture decisions.

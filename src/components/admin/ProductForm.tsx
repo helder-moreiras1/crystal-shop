@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Loader2, ImageOff } from "lucide-react";
+import { Loader2, ImageOff, Star, Trash2, Plus } from "lucide-react";
 import { trpc } from "@/lib/trpc/client";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,8 @@ export interface ProductFormValues {
   sku: string | null;
   categoryId: string;
   isActive: boolean;
-  imageUrl: string | null;
+  /** Ordered image URLs — index 0 is always the primary image (ProductImage.position = 0). */
+  images: string[];
 }
 
 interface ProductFormProps {
@@ -47,8 +48,9 @@ export function ProductForm({ product, categories }: ProductFormProps) {
   const [sku, setSku] = React.useState(product.sku ?? "");
   const [categoryId, setCategoryId] = React.useState(product.categoryId);
   const [isActive, setIsActive] = React.useState(product.isActive);
-  const [imageUrl, setImageUrl] = React.useState(product.imageUrl ?? "");
-  const [imageError, setImageError] = React.useState(false);
+  const [images, setImages] = React.useState<string[]>(product.images);
+  const [newImageUrl, setNewImageUrl] = React.useState("");
+  const [brokenImages, setBrokenImages] = React.useState<Record<number, boolean>>({});
   const [error, setError] = React.useState<string | null>(null);
 
   const createProduct = trpc.admin.products.create.useMutation({
@@ -101,7 +103,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       sku: sku.trim().length > 0 ? sku.trim() : null,
       categoryId,
       isActive,
-      imageUrl: imageUrl.trim(),
+      images,
     };
 
     if (isEditing) {
@@ -111,48 +113,49 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     }
   }
 
-  const trimmedImageUrl = imageUrl.trim();
-  const showPreview = trimmedImageUrl.length > 0 && !imageError;
+  function addImage() {
+    const trimmed = newImageUrl.trim();
+    if (!trimmed) return;
+
+    try {
+      new URL(trimmed);
+    } catch {
+      setError("URL de imagem inválido.");
+      return;
+    }
+
+    setError(null);
+    setImages((prev) => [...prev, trimmed]);
+    setNewImageUrl("");
+  }
+
+  function removeImage(index: number) {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setBrokenImages((prev) => {
+      const { [index]: _removed, ...rest } = prev;
+      return rest;
+    });
+  }
+
+  function makePrimary(index: number) {
+    setImages((prev) => {
+      if (index === 0) return prev;
+      const copy = [...prev];
+      const [item] = copy.splice(index, 1);
+      copy.unshift(item);
+      return copy;
+    });
+  }
+
+  const handleAddImageKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addImage();
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-      {/* Main image */}
-      <div>
-        <Label>Imagem principal</Label>
-        <div className="relative h-40 w-40 overflow-hidden rounded-lg border border-border bg-muted">
-          {showPreview ? (
-            <Image
-              src={trimmedImageUrl}
-              alt={name || "Imagem do produto"}
-              fill
-              className="object-cover"
-              sizes="160px"
-              unoptimized
-              onError={() => setImageError(true)}
-            />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
-              <ImageOff className="h-8 w-8" />
-              <span className="text-xs">Sem imagem</span>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <Label htmlFor="imageUrl">URL da imagem</Label>
-          <Input
-            id="imageUrl"
-            type="url"
-            value={imageUrl}
-            onChange={(e) => {
-              setImageError(false);
-              setImageUrl(e.target.value);
-            }}
-            placeholder="https://…"
-          />
-        </div>
-      </div>
-
       <div>
         <Label htmlFor="name">Nome</Label>
         <Input
@@ -233,6 +236,101 @@ export function ProductForm({ product, categories }: ProductFormProps) {
         <Label htmlFor="isActive" className="mb-0">
           Produto ativo
         </Label>
+      </div>
+
+      {/* Image gallery */}
+      <div>
+        <Label>Galeria de Imagens</Label>
+        <p className="text-xs text-muted-foreground mb-3">
+          A primeira imagem é a imagem principal do produto.
+        </p>
+
+        {images.length > 0 && (
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 mb-4">
+            {images.map((url, index) => {
+              const isPrimary = index === 0;
+              const isBroken = brokenImages[index];
+              return (
+                <div
+                  key={`${url}-${index}`}
+                  className="relative aspect-square overflow-hidden rounded-lg border border-border bg-muted"
+                >
+                  {isBroken ? (
+                    <div className="flex h-full flex-col items-center justify-center gap-1 text-muted-foreground">
+                      <ImageOff className="h-6 w-6" />
+                      <span className="text-[10px]">Inválida</span>
+                    </div>
+                  ) : (
+                    <Image
+                      src={url}
+                      alt={`${name || "Imagem do produto"} ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="120px"
+                      unoptimized
+                      onError={() =>
+                        setBrokenImages((prev) => ({ ...prev, [index]: true }))
+                      }
+                    />
+                  )}
+
+                  {isPrimary && (
+                    <span className="absolute top-1 left-1 inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                      <Star className="h-3 w-3" fill="currentColor" />
+                      Principal
+                    </span>
+                  )}
+
+                  <div className="absolute bottom-1 right-1 flex gap-1">
+                    {!isPrimary && (
+                      <button
+                        type="button"
+                        onClick={() => makePrimary(index)}
+                        aria-label="Tornar imagem principal"
+                        title="Tornar principal"
+                        className="rounded-full bg-background/90 border border-border p-1 hover:bg-background transition-colors"
+                      >
+                        <Star className="h-3.5 w-3.5 text-foreground" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      aria-label="Remover imagem"
+                      title="Remover"
+                      className="rounded-full bg-background/90 border border-border p-1 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {images.length === 0 && (
+          <div className="flex items-center gap-2 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground mb-4">
+            <ImageOff className="h-4 w-4" />
+            Ainda sem imagens.
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <Input
+            id="newImageUrl"
+            type="url"
+            value={newImageUrl}
+            onChange={(e) => setNewImageUrl(e.target.value)}
+            onKeyDown={handleAddImageKeyDown}
+            placeholder="https://…"
+            className="flex-1"
+          />
+          <Button type="button" variant="outline" onClick={addImage}>
+            <Plus className="h-4 w-4" />
+            Adicionar
+          </Button>
+        </div>
       </div>
 
       {error && (
